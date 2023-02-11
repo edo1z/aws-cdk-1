@@ -11,18 +11,17 @@ export class HogeStack extends cdk.Stack {
 
     // s3
     const bucket = new s3.Bucket(this, "hoge_bucket", {
-      versioned: true,
+      versioned: false,
     });
 
     // Lambda
     const lambdaFn = new NodejsFunction(this, "hoge_lambda", {
       runtime: lambda.Runtime.NODEJS_16_X,
       memorySize: 1000,
-      timeout: cdk.Duration.seconds(30),
+      timeout: cdk.Duration.seconds(3),
+      architecture: lambda.Architecture.ARM_64,
     });
-    if (lambdaFn.role) {
-      bucket.grantReadWrite(lambdaFn.role);
-    }
+    bucket.grantReadWrite(lambdaFn);
 
     // Api gateway
     const api = new LambdaRestApi(this, "hoge_apigateway", {
